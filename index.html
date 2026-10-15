@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UIUC Schedule Builder</title>
+    <script type="module" crossorigin src="./assets/index-C_sngSat.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DpP9cB99.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>UIUC Schedule Builder</h1>
+        <p id="term-label" class="term-label"></p>
+      </div>
+      <nav class="tabs" aria-label="Pages">
+        <a href="#browse" data-tab="browse">Browse</a>
+        <a href="#schedule" data-tab="schedule">Schedule <span id="schedule-count" class="tab-count"></span></a>
+      </nav>
+    </header>
+
+    <main>
+      <div id="browse-page" class="browse">
+        <form id="filters" class="filters" aria-label="Course filters">
+          <label class="field">
+            <span>Search</span>
+            <input id="search" type="search" placeholder="CS 124 or psychology" autocomplete="off" />
+          </label>
+
+          <label class="field">
+            <span>Subject</span>
+            <select id="subject">
+              <option value="">All subjects</option>
+            </select>
+          </label>
+
+          <fieldset class="field gen-eds">
+            <legend>Gen Ed requirements</legend>
+            <div id="gen-ed-options"></div>
+            <div class="match-toggle" role="radiogroup" aria-label="How to combine Gen Eds">
+              <label><input type="radio" name="gen-ed-match" value="all" checked /> Fills all checked</label>
+              <label><input type="radio" name="gen-ed-match" value="any" /> Fills any checked</label>
+            </div>
+          </fieldset>
+
+          <label class="field">
+            <span>Sort by</span>
+            <select id="sort">
+              <option value="course">Course number</option>
+              <option value="gpa">Highest average GPA</option>
+            </select>
+          </label>
+
+          <button id="clear-filters" type="button" class="secondary">Clear filters</button>
+        </form>
+
+        <section class="results" aria-live="polite">
+          <p id="result-count" class="result-count"></p>
+          <div id="course-list"></div>
+          <button id="show-more" type="button" class="secondary" hidden>Show more</button>
+        </section>
+      </div>
+
+      <div id="schedule-page" class="schedule-page" hidden>
+        <aside class="planner" aria-label="Planned courses">
+          <form id="profile" class="profile-card" aria-labelledby="profile-heading">
+            <h2 id="profile-heading">Your info</h2>
+            <p class="muted small">
+              Some sections are only open to certain colleges, majors, or years (for example, each ENG 100 section is
+              for one engineering major). Fill this in so the builder only uses sections you can register for.<a
+                href="#override-note" class="footnote-mark">*</a>
+            </p>
+            <label class="field">
+              <span>College</span>
+              <select id="profile-college"></select>
+            </label>
+            <label class="field">
+              <span>Major</span>
+              <input id="profile-major" list="major-options" placeholder="Start typing, e.g. Computer Science" autocomplete="off" />
+              <datalist id="major-options"></datalist>
+              <span id="major-note" class="muted small" hidden></span>
+            </label>
+            <label class="field">
+              <span>Year (next semester)</span>
+              <select id="profile-year"></select>
+            </label>
+            <p id="override-note" class="muted small footnote">
+              * A restriction can sometimes be waived: email your academic advisor or the department that offers the
+              course to ask for an override. If you get one, check that section in the course's list below and the
+              builder will use it.
+            </p>
+          </form>
+          <div id="credit-summary" class="credit-summary"></div>
+          <div id="planned-courses"></div>
+        </aside>
+
+        <section class="schedule-main">
+          <form id="builder-bar" class="builder-bar" aria-label="Schedule builder settings">
+            <label class="field">
+              <span>Earliest class</span>
+              <select id="earliest"></select>
+            </label>
+            <label class="field">
+              <span>Latest class ends</span>
+              <select id="latest"></select>
+            </label>
+            <label class="field">
+              <span>Day off</span>
+              <select id="day-off">
+                <option value="">None</option>
+                <option value="M">Monday</option>
+                <option value="T">Tuesday</option>
+                <option value="W">Wednesday</option>
+                <option value="R">Thursday</option>
+                <option value="F">Friday</option>
+              </select>
+            </label>
+            <button id="generate" type="submit">Generate schedules</button>
+          </form>
+
+          <div class="schedule-nav" id="schedule-nav" hidden>
+            <button id="previous-schedule" type="button" class="secondary" aria-label="Previous schedule">◀</button>
+            <span id="schedule-position" class="schedule-position"></span>
+            <button id="next-schedule" type="button" class="secondary" aria-label="Next schedule">▶</button>
+            <button id="star-schedule" type="button" class="secondary star-button" aria-pressed="false">☆ Star</button>
+          </div>
+
+          <div id="schedule-message" aria-live="polite"></div>
+          <div id="calendar"></div>
+          <div id="no-time-sections"></div>
+        </section>
+      </div>
+    </main>
+
+  </body>
+</html>
