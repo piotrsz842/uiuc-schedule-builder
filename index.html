@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UIUC Schedule Builder</title>
-    <script type="module" crossorigin src="./assets/index-C_sngSat.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DpP9cB99.css">
+    <script type="module" crossorigin src="./assets/index-ZS4YVkOf.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DOmdvSDS.css">
   </head>
   <body>
     <header class="app-header">
@@ -29,10 +29,20 @@
 
           <label class="field">
             <span>Subject</span>
-            <select id="subject">
-              <option value="">All subjects</option>
-            </select>
+            <input id="subject" type="search" list="subject-options" placeholder="All subjects (type CS, Psychology…)" autocomplete="off" />
+            <datalist id="subject-options"></datalist>
+            <span id="subject-note" class="muted small" hidden>Pick a subject from the suggestions.</span>
           </label>
+
+          <fieldset class="field">
+            <legend>Course number</legend>
+            <div class="number-range">
+              <input id="number-min" type="number" inputmode="numeric" min="0" max="999" placeholder="100" aria-label="Lowest course number" />
+              <span>to</span>
+              <input id="number-max" type="number" inputmode="numeric" min="0" max="999" placeholder="299" aria-label="Highest course number" />
+            </div>
+            <span id="number-note" class="muted small" hidden></span>
+          </fieldset>
 
           <fieldset class="field gen-eds">
             <legend>Gen Ed requirements</legend>
