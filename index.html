@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UIUC Schedule Builder</title>
-    <script type="module" crossorigin src="./assets/index-DNCs4peY.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-M5xrEfii.css">
+    <script type="module" crossorigin src="./assets/index-2zNnFCfG.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DpBYcota.css">
   </head>
   <body>
     <header class="app-header">
@@ -16,6 +16,7 @@
       <nav class="tabs" aria-label="Pages">
         <a href="#browse" data-tab="browse">Browse</a>
         <a href="#schedule" data-tab="schedule">Schedule <span id="schedule-count" class="tab-count"></span></a>
+        <button id="how-it-works" type="button" class="link-button how-it-works">How it works</button>
       </nav>
     </header>
 
@@ -110,16 +111,17 @@
         </aside>
 
         <section class="schedule-main">
-          <form id="builder-bar" class="builder-bar" aria-label="Schedule builder settings">
-            <label class="field">
+          <form id="builder-bar" class="builder-bar" aria-labelledby="preferences-heading">
+            <h2 id="preferences-heading">Preferences</h2>
+            <label class="field" title="No class starts before this.">
               <span>Earliest class</span>
               <select id="earliest"></select>
             </label>
-            <label class="field">
+            <label class="field" title="No class runs past this.">
               <span>Latest class ends</span>
               <select id="latest"></select>
             </label>
-            <label class="field">
+            <label class="field" title="Keep this day free of classes.">
               <span>Day off</span>
               <select id="day-off">
                 <option value="">None</option>
@@ -130,6 +132,10 @@
                 <option value="F">Friday</option>
               </select>
             </label>
+            <label class="field" title="How results are ordered. You can change it anytime, even after generating.">
+              <span>Show best first by</span>
+              <select id="schedule-order"></select>
+            </label>
             <button id="generate" type="submit">Generate schedules</button>
           </form>
 
@@ -139,10 +145,6 @@
             <button id="next-schedule" type="button" class="secondary" aria-label="Next schedule">▶</button>
             <button id="star-schedule" type="button" class="secondary star-button" aria-pressed="false">☆ Star</button>
             <button id="grid-toggle" type="button" class="secondary" aria-pressed="false">▦ Grid</button>
-            <label class="order-field">
-              <span>Order</span>
-              <select id="schedule-order"></select>
-            </label>
           </div>
 
           <div id="schedule-message" aria-live="polite"></div>
