@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UIUC Schedule Builder</title>
-    <script type="module" crossorigin src="./assets/index-DR6r823B.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-9Rk6J7c0.css">
+    <script type="module" crossorigin src="./assets/index-DcZWK95X.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-D9e-ojQ7.css">
   </head>
   <body>
     <header class="app-header">
@@ -136,14 +136,10 @@
               <span>Show best first by</span>
               <select id="schedule-order"></select>
             </label>
-            <fieldset class="field break-field" title="A time kept free of classes every day, like lunch.">
-              <legend>Break (every day)</legend>
-              <div class="break-times">
-                <select id="break-start" aria-label="Break starts"></select>
-                <span>to</span>
-                <select id="break-end" aria-label="Break ends"></select>
-              </div>
-              <span id="break-note" class="muted small" hidden>The break has to end after it starts.</span>
+            <fieldset class="field breaks-field" title="Times kept free of classes, each on the days you pick.">
+              <legend>Breaks</legend>
+              <div id="break-list"></div>
+              <button type="button" id="add-break" class="link-button">+ Add a break</button>
             </fieldset>
             <button id="generate" type="submit">Generate schedules</button>
           </form>
