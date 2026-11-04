@@ -1,0 +1,42 @@
+# Refreshes the live site's course data every day, so it stays current without a
+# manual deploy. `npm run deploy` publishes this file to the public site repo as
+# .github/workflows/refresh-data.yml, next to the download scripts in pipeline/.
+name: Refresh course data
+
+on:
+  schedule:
+    - cron: "17 9 * * *" # every day around 3-4 AM in Champaign
+  workflow_dispatch: # the "Run workflow" button, to refresh right away
+
+permissions:
+  contents: write
+
+concurrency: refresh-data
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install the download script's one dependency
+        working-directory: pipeline
+        run: npm install --no-package-lock
+      - name: Download each term the site shows, and check it before using it
+        run: |
+          for published in data/*.json; do
+            name=$(basename "$published" .json)  # e.g. 2027-spring
+            (cd pipeline && node scripts/fetchCourses.ts "${name%%-*}" "${name#*-}")
+            node pipeline/scripts/checkData.ts "$published" "pipeline/public/data/$name.json"
+            cp "pipeline/public/data/$name.json" "$published"
+          done
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git commit -m "Refresh course data"
+          git push
