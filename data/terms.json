@@ -1,0 +1,15 @@
+{
+  "updated": "2026-11-04",
+  "terms": [
+    {
+      "id": "2027-fall",
+      "label": "Fall 2027",
+      "published": false
+    },
+    {
+      "id": "2027-spring",
+      "label": "Spring 2027",
+      "published": true
+    }
+  ]
+}

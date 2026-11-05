@@ -7,11 +7,12 @@
 // CORS headers), so this runs ahead of time and the result is committed.
 
 import { mkdir, writeFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 import type { Course, CourseData, GenEd } from "../src/types.ts";
 import { crossListedCodes } from "../src/crossListings.ts";
 import { computeGpas, parseSubjectList, parseSubjectXml } from "./parseCourses.ts";
 
-const EXPLORER_URL = "https://courses.illinois.edu/cisapp/explorer/schedule";
+export const EXPLORER_URL = "https://courses.illinois.edu/cisapp/explorer/schedule";
 const GPA_CSV_URL =
   "https://raw.githubusercontent.com/wadefagen/datasets/main/gpa/uiuc-gpa-dataset.csv";
 /** How many years of grades to average, so GPAs reflect recent teaching. */
@@ -20,7 +21,7 @@ const GPA_YEARS = 5;
 const CONCURRENCY = 4;
 const TERMS = ["spring", "summer", "fall", "winter"];
 
-async function fetchText(url: string, attempts = 3): Promise<string> {
+export async function fetchText(url: string, attempts = 3): Promise<string> {
   for (let attempt = 1; ; attempt++) {
     try {
       const response = await fetch(url);
@@ -47,13 +48,8 @@ async function mapWithLimit<T, R>(items: T[], limit: number, task: (item: T) => 
   return results;
 }
 
-async function main() {
-  const year = Number(process.argv[2] ?? 2026);
-  const term = (process.argv[3] ?? "fall").toLowerCase();
-  if (!Number.isInteger(year) || year < 2000 || !TERMS.includes(term)) {
-    console.error(`Usage: npm run fetch-data -- <year> <${TERMS.join("|")}>`);
-    process.exit(1);
-  }
+/** Download one term's courses and past GPAs from Course Explorer and the GPA dataset. */
+export async function downloadTerm(year: number, term: string): Promise<CourseData> {
   const termUrl = `${EXPLORER_URL}/${year}/${term}`;
 
   console.log(`Fetching subject list for ${term} ${year}...`);
@@ -97,19 +93,30 @@ async function main() {
     genEds: [...genEds.values()].sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name)),
     courses,
   };
+  const sectionCount = courses.reduce((sum, course) => sum + course.sections.length, 0);
+  console.log(`${data.term}: ${courses.length} courses, ${sectionCount} sections, ${withGpa} with GPA, ${genEds.size} Gen Eds`);
+  return data;
+}
 
+async function main() {
+  const year = Number(process.argv[2] ?? 2026);
+  const term = (process.argv[3] ?? "fall").toLowerCase();
+  if (!Number.isInteger(year) || year < 2000 || !TERMS.includes(term)) {
+    console.error(`Usage: npm run fetch-data -- <year> <${TERMS.join("|")}>`);
+    process.exit(1);
+  }
+  const data = await downloadTerm(year, term);
   await mkdir("public/data", { recursive: true });
   const outputPath = `public/data/${year}-${term}.json`;
   const json = JSON.stringify(data);
   await writeFile(outputPath, json);
-  const sectionCount = courses.reduce((sum, course) => sum + course.sections.length, 0);
-  console.log(
-    `Wrote ${outputPath}: ${courses.length} courses, ${sectionCount} sections, ` +
-      `${withGpa} with GPA, ${genEds.size} Gen Eds, ${(json.length / 1e6).toFixed(1)} MB`,
-  );
+  console.log(`Wrote ${outputPath} (${(json.length / 1e6).toFixed(1)} MB)`);
 }
 
-main().catch((error) => {
-  console.error("Download failed:", error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+// Run only from the command line, not when the daily refresh imports this file.
+if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
+  main().catch((error) => {
+    console.error("Download failed:", error instanceof Error ? error.message : error);
+    process.exit(1);
+  });
+}

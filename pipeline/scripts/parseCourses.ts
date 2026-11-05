@@ -186,7 +186,8 @@ export function parseSubjectXml(xml: string): { courses: Course[]; genEds: GenEd
 
 /** Parse the term XML (e.g. .../2026/fall.xml) into its list of subjects. */
 export function parseSubjectList(xml: string): { code: string; name: string }[] {
-  const subjects: XmlText[] = xmlParser.parse(xml).term?.subjects?.subject ?? [];
+  const listed = xmlParser.parse(xml).term?.subjects?.subject ?? [];
+  const subjects: XmlText[] = Array.isArray(listed) ? listed : [listed];
   return subjects.map((subject) => ({ code: attributeOf(subject, "id"), name: textOf(subject) }));
 }
 
@@ -328,4 +329,14 @@ export function computeGpas(csv: string, minYear: number): Map<string, CourseGpa
     result.set(key, { course: totals.course.summary(), instructors });
   }
   return result;
+}
+
+/** A calendar year's terms from Course Explorer, with ids like "2027-spring" (the data file names). */
+export function parseTermList(xml: string): { id: string; label: string }[] {
+  const listed = xmlParser.parse(xml).calendarYear?.terms?.term ?? [];
+  const terms: XmlText[] = Array.isArray(listed) ? listed : [listed];
+  return terms.flatMap((term) => {
+    const match = /\/(\d{4})\/(\w+)\.xml$/.exec(attributeOf(term, "href"));
+    return match ? [{ id: `${match[1]}-${match[2]}`, label: textOf(term) }] : [];
+  });
 }

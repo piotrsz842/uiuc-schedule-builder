@@ -23,6 +23,17 @@ export function problemWithUpdate(published: CourseData, downloaded: CourseData)
   return null;
 }
 
+/** A new term with fewer courses than this is treated as a partial download. */
+const MIN_NEW_TERM_COURSES = 100;
+
+/** Why a term the site hasn't shown before shouldn't be published yet, or null if it's fine. */
+export function problemWithNewTerm(downloaded: CourseData): string | null {
+  if (downloaded.courses.length < MIN_NEW_TERM_COURSES) {
+    return `Downloaded only ${downloaded.courses.length} courses for ${downloaded.term}.`;
+  }
+  return null;
+}
+
 function main() {
   const [publishedPath, downloadedPath] = process.argv.slice(2);
   if (!publishedPath || !downloadedPath) {
