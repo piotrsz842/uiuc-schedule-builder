@@ -33,4 +33,6 @@ jobs:
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git add --all data
           git commit -m "Refresh course data"
+          # A deploy may have published while this ran; put the new data on top of it.
+          git pull --rebase origin gh-pages
           git push
