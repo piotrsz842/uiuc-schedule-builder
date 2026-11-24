@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UIUC Schedule Builder</title>
-    <script type="module" crossorigin src="./assets/index-BLsalh3P.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CptRdXXs.css">
+    <script type="module" crossorigin src="./assets/index-BXOPqwJF.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B5dHYsOr.css">
   </head>
   <body>
     <header class="app-header">
@@ -140,10 +140,13 @@
                 <option value="F">Friday</option>
               </select>
             </label>
-            <label class="field" title="How results are ordered. You can change it anytime, even after generating.">
-              <span>Show best first by</span>
+            <div class="field order-field">
+              <label for="schedule-order" title="How results are ordered. You can change it anytime, even after generating.">Show best first by</label>
               <select id="schedule-order"></select>
-            </label>
+              <label class="checkbox group-lectures" title="Step through schedules with different lectures; pick lab and discussion times above the calendar. Uncheck to see every schedule one by one.">
+                <input id="group-lectures" type="checkbox" /> Group same lectures
+              </label>
+            </div>
             <label class="field skip-restricted-field" title="Leave out sections only some students can register for. You can still check one yourself in Edit sections.">
               <span>Restricted 🔒 sections</span>
               <span class="checkbox"><input id="skip-restricted" type="checkbox" /> Skip them</span>
